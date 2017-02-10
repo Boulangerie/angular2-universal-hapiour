@@ -4,5 +4,9 @@
 // The list of which env maps to which file can be found in `angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  here: {
+    url: process.env.HERE_URL || '',
+    port: process.env.HERE_PORT || 4200
+  }
 };

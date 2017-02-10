@@ -1,0 +1,5 @@
+<section class="main" *ngIf="todos.length > 0">
+  <ul class="todo-list">
+    <app-todo *ngFor="let todo of todos" [todo]="todo"></app-todo>
+  </ul>
+</section>

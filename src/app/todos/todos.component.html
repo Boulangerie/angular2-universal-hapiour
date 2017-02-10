@@ -1,0 +1,12 @@
+<header class="header">
+  <h1>Todos</h1>
+  <input class="new-todo"
+         placeholder="What needs to be done?"
+         autofocus=""
+         [(ngModel)]="newTodo.title"
+         (keyup.enter)="addTodo()">
+</header>
+<app-todo-list [todos]="todos"></app-todo-list>
+<footer class="footer" *ngIf="todos.length > 0">
+  <span class="todo-count"><strong>{{todos.length}}</strong> {{todos.length == 1 ? 'item' : 'items'}} left</span>
+</footer>

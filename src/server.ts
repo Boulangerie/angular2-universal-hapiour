@@ -6,14 +6,15 @@ import { AppModule } from './app/app.node.module'
 import { environment } from './environments/environment'
 import { routes } from './server.routes'
 
-import { Server } from 'hapi'
-import { App, IApp, bootstrap } from 'hapiour'
+import { Server, Request, IReply, Response } from 'hapi'
+import { App, Inject, IApp, bootstrap } from 'hapiour'
 import hapiEngine from './hapi-engine'
+import { Api } from './app/server/api.server'
 
 // App
 
 const ROOT = path.join(path.resolve(__dirname, '..'))
-const port = process.env.PORT || 4200
+const port = environment.here.port
 
 /**
  * enable prod mode for production environments
@@ -25,6 +26,7 @@ if (environment.production) {
 @App({
   port: port
 })
+@Inject([Api])
 export class MyApp implements IApp {
 
   private server: Server
@@ -100,12 +102,17 @@ export class MyApp implements IApp {
     /**
      * if you want to use universal for all routes, you can use the '*' wildcard
      */
-      this.server.ext('onPostHandler', (request, reply) => {
-        const response = request.response
+      this.server.ext('onPostHandler', (request: Request, reply: IReply) => {
+        const response: Response = request.response
         if (response.isBoom && (<any>response).output.statusCode === 404) {
-          const pojo = {status: 404, message: 'No Content'}
+          const pojo = {
+            status: 404,
+            message: 'No Content'
+          }
           const json = JSON.stringify(pojo, null, 2)
-          return reply(json).header('Content-Type', 'application/json').code(404)
+          return reply(json)
+            .header('Content-Type', 'application/json')
+            .code(404)
         } else {
           return reply.continue()
         }
@@ -124,7 +131,6 @@ export class MyApp implements IApp {
         path: path.join(ROOT, 'src/app'),
         layoutPath: path.join(ROOT, 'src/app')
       })
-      console.log(path.join(ROOT, 'src/app'))
     })
 
   }
